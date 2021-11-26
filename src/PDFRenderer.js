@@ -170,6 +170,7 @@ function PDFRenderer({
   }
 
   const addTextListener = () => {
+    setIsDrawingMode(false)
     fabricCanvas.current.canvas.on("mouse:up", addText)
   }
 
