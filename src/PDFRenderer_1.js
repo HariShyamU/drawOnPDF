@@ -1,16 +1,6 @@
-import { useEffect, useRef, useState, useCallback } from "react";
-import * as pdfjs from "pdfjs-dist/legacy/build/pdf";
-import { fabric } from "./fabric";
-import "./PDFRenderer.css";
-// import nextPrevIcon from "../../assets/icons/Next.svg";
-// import editIcon from "../../assets/icons/Edit.svg";
-// import undoIcon from "../../assets/icons/undo.svg";
-// import Button from "../button/Button";
-// import brushDefaultIcon from "../../assets/icons/brush_default.svg";
-// import brushSize1Icon from "../../assets/icons/brush_size1.svg";
-// import brushSize2Icon from "../../assets/icons/brush_size2.svg";
-// import textIcon from "../../assets/icons/T.svg";
-// import closeIcon from "../../assets/icons/close.svg";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import * as pdfjs from 'pdfjs-dist/legacy/build/pdf';
+import {fabric } from "./fabric"
 
 function PDFRenderer({
   readOnly= false,
@@ -188,10 +178,8 @@ function PDFRenderer({
   }, [properties])
 
   useEffect(() => {
-    if (fabricCanvas.current.canvas) {
-      changeColor();
-      changeWidth();
-    }
+    changeColor();
+    changeWidth();
   }, [properties, changeColor, changeWidth])
 
   const flipPage = (pageNumber) => {
@@ -255,147 +243,35 @@ function PDFRenderer({
     }
   }, [isDrawingMode])
 
-	return (
-		<>
-			<canvas id="pdfCanvas" style={{ display: "none" }} />
-			<div ref={canvasContainer} className="canvas-wrapper">
-				<canvas id="canvas" />
-			</div>
 
-			{readOnly === false && (
-				<>
-					<footer className="edit-document-footer padding-default flex-place-children-page-center inherit-parent-width">
-						<section className="padding-default edit-document-options inherit-parent-width max-width-588px flex-center-children-vertically flex-justify-content-space-between">
-							<button
-								onClick={() => {
-									setIsDrawingMode(!isDrawingMode);
-								}}
-								style={{
-									backgroundColor: isDrawingMode ? "#F1F1F1" : "#ffff"
-								}}
-							>
-								{/* <img src={editIcon} alt="edit_icon" /> */}
-							</button>
-
-							<button
-								className="edit-btn-with-options flex-place-children-page-center"
-								onClick={() => {
-									// setShowBrushOptions((prevState) => !prevState);
-								}}
-							>
-								<div
-									className="edit-options-wrapper"
-									// style={{ display: showBrushOptions ? "block" : "none" }}
-								>
-									{/* <img src={brushSize2Icon} alt="brush_icon" /> */}
-									{/* <img src={brushSize1Icon} alt="brush_icon" /> */}
-								</div>
-								{/* <img src={brushDefaultIcon} alt="brush_icon" /> */}
-							</button>
-
-							<button
-								onClick={() => {
-									// add Color
-									// setShowColorOptions((prevState) => !prevState);
-								}}
-								className="edit-btn-with-options flex-place-children-page-center"
-							>
-								<div
-									className="edit-options-wrapper"
-									// style={{ display: showColorOptions ? "block" : "none" }}
-								>
-									<span
-										style={{
-											backgroundColor: "blue"
-										}}
-									/>
-									<span
-										style={{
-											backgroundColor: "#00C880"
-										}}
-									/>
-									<span
-										style={{
-											backgroundColor: "#E64539"
-										}}
-									/>
-								</div>
-								<span
-									style={{
-										backgroundColor: "#4E4E4E"
-									}}
-								/>
-							</button>
-
-							<button
-								onClick={() => {
-									addTextListener();
-								}}
-							>
-								{/* <input id="addTextInput" /> */}
-								{/* <img src={textIcon} alt="add_text_icon" /> */}
-							</button>
-
-							<button
-								onClick={() => {
-									undo();
-								}}
-							>
-								{/* <img src={undoIcon} alt="undo_icon" /> */}
-							</button>
-
-							<button
-								onClick={() => {
-									clearAll();
-								}}
-							>
-								{/* <img src={closeIcon} alt="clear_icon" /> */}
-							</button>
-						</section>
-
-						<section className="inherit-parent-width max-width-588px flex-center-children-vertically flex-justify-content-space-between ">
-							{/* <Button
-								id="add-btn"
-								text="Add"
-								buttonVariant="filled"
-								className="margin-small"
-								onClick={() => {}}
-								disabled={false}
-							/>
-							<Button
-								id="draft-btn"
-								text="Draft"
-								className="margin-small"
-								buttonVariant="bordered"
-								onClick={() => {}}
-								disabled={false}
-							/> */}
-						</section>
-					</footer>
-				</>
-			)}
-			{/* <div> */}
-			<button
-				className="pdf-page-nav-btn previous"
-				onClick={() => {
-					page > 1 && flipPage(page - 1);
-				}}
-			>
-				{/* <img src={nextPrevIcon} alt="previous_icon" /> */}
-			</button>
-			<button
-				className="pdf-page-nav-btn next"
-				onClick={() => {
-					page < totalPages && flipPage(page + 1);
-				}}
-			>
-				{/* <img src={nextPrevIcon} alt="next_icon" /> */}
-			</button>
-			{/* </div> */}
-			{/* </div> */}
-			{/* </div> */}
-		</>
-	);
+  return (
+    <>
+    <canvas id="pdfCanvas" style={{display:"none"}} />
+    <div ref={canvasContainer} style={{position:'relative'}}>
+      <canvas id="canvas" />
+      <div style={{width:'100%', display:'flex', flexDirection:'column', alignItems:'center', position:"absolute", bottom:"0"}}>
+        {
+          readOnly === false && <>
+            <div>
+              <button onClick={() => {setIsDrawingMode(!isDrawingMode)}}>{isDrawingMode ? "Disable Drawing" : "Enable Drawing"}</button>
+              <input id="addTextInput"/>
+              <button onClick={() => {addTextListener(document.getElementById('addTextInput').value)}}>Add text</button>
+            </div>
+            <div>
+              <button onClick={() => {clearAll()}}>clear</button>
+              <button onClick={() => {undo()}}>undo</button>
+            </div>
+          </>
+        }
+        <div>
+          <button onClick={() => {page>1 && flipPage(page-1)}}>prev</button>
+          <button onClick={() => {page<totalPages && flipPage(page+1)}}>next</button>
+        </div>
+      </div>
+    </div>
+    
+    </>
+  );
 }
 
 export default PDFRenderer;
